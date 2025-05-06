@@ -321,6 +321,7 @@ if __name__ == "__main__":
     # Iniciar el hilo para la actualización programada
     threading_programador = threading.Thread(target=iniciar_programador, daemon=True)
     threading_programador.start()
+     #fs
     
     # Iniciar servidor FastAPI
     uvicorn.run(app, host="0.0.0.0", port=8080)
