@@ -316,30 +316,6 @@ async def get_recomendaciones_cliente(cliente_id: str):
     return {"success": True, "recomendaciones": recomendaciones}
 
 
-
-# 4. Endpoints API
-@app.get("/health")
-async def health_check():
-    """
-    Endpoint de health check para mantener la aplicación activa en Render
-    """
-    global contador_health_checks
-    contador_health_checks += 1
-    
-    tiempo_activo = datetime.now() - inicio_servidor
-    dias = tiempo_activo.days
-    horas, remainder = divmod(tiempo_activo.seconds, 3600)
-    minutos, segundos = divmod(remainder, 60)
-    
-    return {
-        "status": "OK",
-        "timestamp": datetime.now().isoformat(),
-        "uptime": f"{dias} días, {horas} horas, {minutos} minutos, {segundos} segundos",
-        "health_checks_realizados": contador_health_checks,
-        "ultima_actualizacion_predicciones": fecha_ultimo_calculo.isoformat() if fecha_ultimo_calculo else None,
-        "proxima_actualizacion_predicciones": fecha_proxima_actualizacion.isoformat() if fecha_proxima_actualizacion else None
-    }
-
 # 5. Ejecutar servidor
 if __name__ == "__main__":
     # Iniciar el hilo para la actualización programada
