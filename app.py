@@ -255,21 +255,25 @@ def iniciar_programador():
 # 4. Endpoints API
 @app.get("/api/productos/populares")
 async def get_productos_populares():
-    """Endpoint original para productos populares"""
-    global ultima_prediccion_por_rango, fecha_ultimo_calculo
+    """Endpoint para productos populares con diversidad forzada"""
+    hoy = datetime.now()
+    fecha_fin = hoy.strftime("%d/%m/%Y")
+    fecha_inicio = (hoy - timedelta(days=10)).strftime("%d/%m/%Y")
     
-    # Si tenemos una predicción por rango válida, la usamos
-    if ultima_prediccion_por_rango and fecha_ultimo_calculo:
-        return {
-            "success": True, 
-            "productos": ultima_prediccion_por_rango,
-            "calculado_en": fecha_ultimo_calculo.isoformat(),
-            "proxima_actualizacion": fecha_proxima_actualizacion.isoformat() if fecha_proxima_actualizacion else None
-        }
+    # Forzar diversidad = True directamente en cada llamada
+    productos_diversos = obtener_productos_populares_por_rango(
+        fecha_inicio=fecha_inicio, 
+        fecha_fin=fecha_fin,
+        n=10,
+        diversidad=True  # Siempre forzar diversidad
+    )
     
-    # De lo contrario, usamos el método original
-    productos = obtener_productos_populares(n=10)
-    return {"success": True, "productos": productos}
+    return {
+        "success": True, 
+        "productos": productos_diversos,
+        "calculado_en": hoy.isoformat(),
+        "proxima_actualizacion": (hoy + timedelta(days=7)).isoformat()
+    }
 
 @app.post("/api/productos/populares/por-rango")
 async def calcular_productos_populares_por_rango(
